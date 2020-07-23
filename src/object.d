@@ -1147,6 +1147,16 @@ class TypeInfo_Class : TypeInfo
     immutable(void)* m_RTInfo;        // data for precise GC
     override @property immutable(void)* rtInfo() const { return m_RTInfo; }
 
+    version (LDC) version (CRuntime_Microsoft)
+    {
+        /**
+         * For MSVC EH, we need a unique name for each Throwable type, see
+         * https://github.com/ldc-developers/ldc/pull/3517.
+         * The compiler only sets it for Throwable and derived classes.
+         */
+        string mangledName;
+    }
+
     /**
      * Search all modules for TypeInfo_Class corresponding to classname.
      * Returns: null if not found

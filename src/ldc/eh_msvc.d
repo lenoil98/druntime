@@ -194,15 +194,16 @@ ImgPtr!CatchableType getCatchableType(TypeInfo_Class ti)
     if (auto p = ti in catchableHashtab)
         return *p;
 
-    size_t sz = TypeDescriptor.sizeof + ti.name.length;
+    string name = ti.mangledName.ptr ? ti.mangledName : ti.name;
+
+    size_t sz = TypeDescriptor.sizeof + name.length;
     auto td = eh_malloc!TypeDescriptor(sz);
     auto ptd = td.toPointer;
 
     ptd.hash = 0;
     ptd.spare = null;
-    ptd.name.ptr[0] = 'D';
-    memcpy(ptd.name.ptr + 1, ti.name.ptr, ti.name.length);
-    ptd.name.ptr[ti.name.length + 1] = 0;
+    memcpy(ptd.name.ptr, name.ptr, name.length);
+    ptd.name.ptr[name.length] = 0;
 
     auto ct = eh_malloc!CatchableType();
     ct.toPointer[0] = CatchableType(CT_IsSimpleType, td, PMD(0, -1, 0), size_t.sizeof, PMFN());
