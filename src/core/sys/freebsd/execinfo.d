@@ -42,6 +42,8 @@ else
             asm nothrow @trusted { mov p[RBP], RBP; }
         else version (AArch64)
             asm nothrow @trusted { "str x29, %0" : "=m" (p); }
+		else version (PPC64) 
+			asm nothrow @trusted{ "stdu %r1,-144(%r1)", "=*m", &p); } 
         else
             static assert(false, "Architecture not supported.");
 
